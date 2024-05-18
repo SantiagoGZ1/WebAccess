@@ -4,10 +4,11 @@ public class ConcreteHandleCache extends AbstractHandler{
   private String cacheTipo;
 
   @Override
-  public void handle(SolicitudLogin request) {
-cacheUser = request.getUsuario();
-cacheTipo = request.getTipo();
+  public boolean handle(SolicitudLogin request) {
+      cacheUser = request.getUsuario();
+      cacheTipo = request.getTipo();
 
-    System.out.println("Último usuario que inició sesión: " + cacheUser + " con el rol: " + cacheTipo);
+      System.out.println("Último usuario que inició sesión: " + cacheUser + " con el rol: " + cacheTipo);
+      return true;
   }
 }

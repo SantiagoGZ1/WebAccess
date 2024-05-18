@@ -5,5 +5,13 @@ abstract class AbstractHandler {
     this.next = next;
   }
 
-  public abstract void handle(SolicitudLogin request);
+  public void handleRequest(SolicitudLogin request) {
+    if (handle(request)) {
+      if (next != null) {
+        next.handleRequest(request);
+      }
+    }
+  }
+
+  public abstract boolean handle(SolicitudLogin request);
 }

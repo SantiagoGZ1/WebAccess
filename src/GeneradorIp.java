@@ -8,8 +8,9 @@ public class GeneradorIp {
         return ipRandom;
     }
 
-    public void guardarIp() {
+    public String guardarIp() {
         int numeroGuardado = random();
         System.out.println(numeroGuardado);
+        return String.valueOf(numeroGuardado);
     }
 }
