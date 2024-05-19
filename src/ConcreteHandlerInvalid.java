@@ -24,40 +24,41 @@ public class ConcreteHandlerInvalid extends AbstractHandler{
         break;
       }
     }
-    // Leer usuarios desde el archivo y validar credenciales
+    // Revisa que el usuario exista
     if (validarCredenciales(request.getUsuario(), request.getContraseña())) {
       if (index != -1) {
-        intentosFallidos[index] = 0; // Reiniciar el contador de intentos fallidos
+        intentosFallidos[index] = 0; // Reinicia el contador de intentos fallidos
       }
-      return true; // Credenciales válidas
+      return true;
     }
 
-    // Si la IP ya existe, incrementar el contador de intentos fallidos
+    // Si la IP ya existe, incrementa el contador de intentos fallidos
     if (index != -1) {
       intentosFallidos[index]++;
     } else {
-      // Si la IP no existe, buscar el primer espacio vacío en el arreglo
+      // Si la IP no existe, busca el primer espacio vacío en el arreglo
       for (int i = 0; i < ips.length; i++) {
         if (ips[i] == null) {
           index = i;
           ips[i] = ip;
-          intentosFallidos[i] = 1; // Iniciar el contador de intentos fallidos
+          intentosFallidos[i] = 1; // Inicia el contador de intentos fallidos
           break;
         }
       }
     }
 
-    // Si se supera el número máximo de intentos, bloquear la IP
+    // Si se supera el número máximo de intentos, bloquea la IP
     if (intentosFallidos[index] >= MAX_INTENTOS) {
       System.out.println("IP bloqueada por demasiados intentos fallidos.");
       return false;
     }
 
-    // Imprimir mensaje de fallo en la autenticación
+    // Imprime mensaje de fallo en la autenticación
     System.out.println("Fallo en la autenticación.");
     return false;
   }
 
+  // Funcion que valida las credenciales
   private boolean validarCredenciales(String username, String password) {
     try (BufferedReader br = new BufferedReader(new FileReader(USUARIOS_FILE))) {
       String line;
@@ -67,14 +68,14 @@ public class ConcreteHandlerInvalid extends AbstractHandler{
           String storedUsername = partes[0];
           String storedPassword = partes[1];
           if (storedUsername.equals(username) && storedPassword.equals(password)) {
-            return true; // Credenciales válidas
+            return true;
           }
         }
       }
-    } catch (IOException e) {
+    } catch (IOException e) { // Captura excepcicon en caso de no poder leer el .txt
       e.printStackTrace();
     }
-    return false; // Credenciales inválidas
+    return false;
   }
 
   public boolean isIpBlocked(String ip) {
