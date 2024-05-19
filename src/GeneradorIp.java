@@ -10,7 +10,7 @@ public class GeneradorIp {
 
     public String guardarIp() {
         int numeroGuardado = random();
-        System.out.println(numeroGuardado);
+        //System.out.println(numeroGuardado);
         return String.valueOf(numeroGuardado);
     }
 }
