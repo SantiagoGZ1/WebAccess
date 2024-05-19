@@ -1,7 +1,12 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
 public class ConcreteHandlerInvalid extends AbstractHandler{
   private String[] ips;
   private int[] intentosFallidos;
   private static final int MAX_INTENTOS = 4;
+  private static final String USUARIOS_FILE = "src/BaseDeDatos.txt";
 
   public ConcreteHandlerInvalid() {
     ips = new String[MAX_INTENTOS];
@@ -12,7 +17,6 @@ public class ConcreteHandlerInvalid extends AbstractHandler{
   public boolean handle(SolicitudLogin request) {
     String ip = request.getIpRequest();
 
-    // Buscar si la IP ya existe en el arreglo
     int index = -1;
     for (int i = 0; i < ips.length; i++) {
       if (ip.equals(ips[i])) {
@@ -20,11 +24,12 @@ public class ConcreteHandlerInvalid extends AbstractHandler{
         break;
       }
     }
-
-    // Si el usuario proporciona credenciales válidas, reiniciar el contador de intentos
-    if (index != -1 && "admin1".equals(request.getUsuario()) && "adminpass".equals(request.getContraseña())) {
-      intentosFallidos[index] = 0;
-      return true; // Permitir que el siguiente manejador procese la solicitud
+    // Leer usuarios desde el archivo y validar credenciales
+    if (validarCredenciales(request.getUsuario(), request.getContraseña())) {
+      if (index != -1) {
+        intentosFallidos[index] = 0; // Reiniciar el contador de intentos fallidos
+      }
+      return true; // Credenciales válidas
     }
 
     // Si la IP ya existe, incrementar el contador de intentos fallidos
@@ -36,6 +41,7 @@ public class ConcreteHandlerInvalid extends AbstractHandler{
         if (ips[i] == null) {
           index = i;
           ips[i] = ip;
+          intentosFallidos[i] = 1; // Iniciar el contador de intentos fallidos
           break;
         }
       }
@@ -48,12 +54,30 @@ public class ConcreteHandlerInvalid extends AbstractHandler{
     }
 
     // Imprimir mensaje de fallo en la autenticación
-    System.out.println("PROBANDO COSITAS");
-    System.out.println(request.getIpRequest());
+    System.out.println("Fallo en la autenticación.");
     return false;
   }
 
-    public boolean isIpBlocked(String ip) {
+  private boolean validarCredenciales(String username, String password) {
+    try (BufferedReader br = new BufferedReader(new FileReader(USUARIOS_FILE))) {
+      String line;
+      while ((line = br.readLine()) != null) {
+        String[] partes = line.split(",");
+        if (partes.length == 3) {
+          String storedUsername = partes[0];
+          String storedPassword = partes[1];
+          if (storedUsername.equals(username) && storedPassword.equals(password)) {
+            return true; // Credenciales válidas
+          }
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return false; // Credenciales inválidas
+  }
+
+  public boolean isIpBlocked(String ip) {
     // Buscar si la IP está bloqueada
     for (int i = 0; i < ips.length; i++) {
       if (ip.equals(ips[i]) && intentosFallidos[i] >= MAX_INTENTOS) {
@@ -62,4 +86,5 @@ public class ConcreteHandlerInvalid extends AbstractHandler{
     }
     return false;
   }
-}
+  }
+

@@ -1,14 +1,4 @@
-import java.util.ArrayList;
-import java.util.List;
-
 class ConcreteHandlerAdmin extends AbstractHandler {
-  private List<Usuario> adminValidos;
-
-  public ConcreteHandlerAdmin() {
-    adminValidos = new ArrayList<>();
-    // AdminsGuardados
-    adminValidos.add(new Usuario("admin1", "adminpass", "admin"));
-  }
 
   @Override
   public boolean handle(SolicitudLogin request) {
