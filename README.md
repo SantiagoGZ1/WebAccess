@@ -18,5 +18,4 @@ Este proyecto demuestra la implementación del patrón Chain of Responsibility e
 </ul>
 
 ### Diagrama UML
-
-![Diagrama UML](img/Workshop2.drawio.png)
+(</span><span>https://raw.githubusercontent.com/SantiagoGZ1/WorkShopAccesoWeb/master/src/img/Workshop2.drawio.png</span><span>)</span>
