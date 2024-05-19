@@ -12,9 +12,9 @@ public class Cliente {
     String ip = random.guardarIp();
 
     //Cadena de responsabilidad
+    invalidUser.setNext(usuarioHandler);
     usuarioHandler.setNext(adminHandler);
-    adminHandler.setNext(invalidUser);
-    invalidUser.setNext(cacheUser);
+    adminHandler.setNext(cacheUser);
     cacheUser.setNext(sistemaOrdenes);
 
     Scanner scanner = new Scanner(System.in);
@@ -30,16 +30,12 @@ public class Cliente {
 
       SolicitudLogin solicitud = new SolicitudLogin(usuario, contrasenia, tipo, ip);
 
-      usuarioHandler.handleRequest(solicitud);
+      invalidUser.handleRequest(solicitud);
+      autenticado = solicitud.getValidacion();
 
       if (invalidUser.isIpBlocked(ip)) {
         System.out.println("La IP ha sido bloqueada. No puede intentar más.");
         break;
-      }
-
-      // Verificar si la autenticación fue exitosa
-      if ("user".equals(solicitud.getTipo()) || "admin".equals(solicitud.getTipo())) {
-        autenticado = true;
       }
     }
   }
